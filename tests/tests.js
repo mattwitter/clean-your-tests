@@ -91,6 +91,19 @@ describe('calculateLTDPrice', () => {
   })
 })
 
+describe('calculateCommuterCost', () => {
+  it('returns the price of selected(parking) commuter product without employer contribution', () => {
+    const selectedOptions = { benefits: 'parking' }
+    const price = pricing.calculateCommuterCost(products.commuter, selectedOptions)
+    expect(price).to.equal(250)
+  })
+  it('returns the price of selected(train) commuter product without employer contribution', () => {
+    const selectedOptions = { benefits: 'train' }
+    const price = pricing.calculateCommuterCost(products.commuter, selectedOptions)
+    expect(price).to.equal(84.75)
+  })
+})
+
 describe('calculateProductPrice', () => {
   let sandbox
   let formatPriceSpy
@@ -98,6 +111,7 @@ describe('calculateProductPrice', () => {
   let calculateVolLifePricePerRoleSpy
   let calculateVolLifePriceSpy
   let calculateLTDPriceSpy
+  let calculateCommuterCostSpy
 
   beforeEach(() => {
     sandbox = sinon.createSandbox()
@@ -107,10 +121,28 @@ describe('calculateProductPrice', () => {
     calculateVolLifePricePerRoleSpy = sandbox.spy(pricing, 'calculateVolLifePricePerRole')
     calculateVolLifePriceSpy = sandbox.spy(pricing, 'calculateVolLifePrice')
     calculateLTDPriceSpy = sandbox.spy(pricing, 'calculateLTDPrice')
+    calculateCommuterCostSpy = sandbox.spy(pricing, 'calculateCommuterCost')
   })
 
   afterEach(() => {
     sandbox.restore()
+  })
+
+  it('returns the price of selected(parking) commuter product with contribution', () => {
+    const selectedOptions = { benefits: 'parking' }
+    const price = pricing.calculateProductPrice(products.commuter, selectedOptions)
+    expect(price).to.equal(175)
+    expect(formatPriceSpy).to.have.callCount(1)
+    expect(getEmployerContributionSpy).to.have.callCount(1)
+    expect(calculateCommuterCostSpy).to.have.callCount(1)
+  })
+  it('returns the price of selected(train) commuter product with employer contribution', () => {
+    const selectedOptions = { benefits: 'train' }
+    const price = pricing.calculateProductPrice(products.commuter, selectedOptions)
+    expect(price).to.equal(9.75)
+    expect(formatPriceSpy).to.have.callCount(1)
+    expect(getEmployerContributionSpy).to.have.callCount(1)
+    expect(calculateCommuterCostSpy).to.have.callCount(1)
   })
 
   it('returns the price for a voluntary life product for a single employee', () => {
