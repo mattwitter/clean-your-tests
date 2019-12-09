@@ -73,8 +73,8 @@ describe('calculateLTDPrice', () => {
     }
     const price = pricing.calculateLTDPrice(
       products.longTermDisability,
-      employee,
-      selectedOptions
+      selectedOptions,
+      employee
     )
     expect(price).to.equal(32.04)
   })
@@ -84,8 +84,8 @@ describe('calculateLTDPrice', () => {
     }
     const price = pricing.calculateLTDPrice(
       products.longTermDisability,
-      employee,
-      selectedOptions
+      selectedOptions,
+      employee
     )
     expect(price).to.equal(0)
   })
@@ -103,6 +103,7 @@ describe('calculateCommuterCost', () => {
     expect(price).to.equal(84.75)
   })
 })
+
 
 describe('calculateProductPrice', () => {
   let sandbox
@@ -150,7 +151,7 @@ describe('calculateProductPrice', () => {
       familyMembersToCover: ['ee'],
       coverageLevel: [{ role: 'ee', coverage: 125000 }],
     }
-    const price = pricing.calculateProductPrice(products.voluntaryLife, employee, selectedOptions)
+    const price = pricing.calculateProductPrice(products.voluntaryLife, selectedOptions, employee)
     expect(price).to.equal(39.37)
     expect(calculateVolLifePriceSpy).to.have.callCount(1)
     expect(getEmployerContributionSpy).to.have.callCount(1)
@@ -165,7 +166,7 @@ describe('calculateProductPrice', () => {
         { role: 'sp', coverage: 75000 },
       ],
     }
-    const price = pricing.calculateProductPrice(products.voluntaryLife, employee, selectedOptions)
+    const price = pricing.calculateProductPrice(products.voluntaryLife, selectedOptions, employee)
     expect(price).to.equal(71.09)
     expect(calculateVolLifePriceSpy).to.have.callCount(1)
     expect(getEmployerContributionSpy).to.have.callCount(1)
@@ -176,7 +177,7 @@ describe('calculateProductPrice', () => {
     const selectedOptions = {
       familyMembersToCover: ['ee']
     }
-    const price = pricing.calculateProductPrice(products.longTermDisability, employee, selectedOptions)
+    const price = pricing.calculateProductPrice(products.longTermDisability, selectedOptions, employee)
     expect(price).to.equal(22.04)
     expect(calculateLTDPriceSpy).to.have.callCount(1)
     expect(getEmployerContributionSpy).to.have.callCount(1)

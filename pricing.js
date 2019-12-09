@@ -34,7 +34,7 @@ function calculateVolLifePrice(product, selectedOptions) {
   return price
 }
 
-function calculateLTDPrice(product, employee, selectedOptions) {
+function calculateLTDPrice(product, selectedOptions, employee) {
   var price = 0
   const { familyMembersToCover } = selectedOptions
 
@@ -55,7 +55,18 @@ function calculateLTDPrice(product, employee, selectedOptions) {
   return price
 }
 
-function calculateProductPrice(product, employee, selectedOptions) {
+function calculateCommuterCost(product, selectedOptions) {
+  let price = 0
+  if (selectedOptions.benefits === 'parking') {
+    return price += 250
+  }
+  else {
+    price += 84.75
+    return price
+  }
+}
+
+function calculateProductPrice(product, selectedOptions, employee) {
   let price
   let employerContribution
 
@@ -65,7 +76,11 @@ function calculateProductPrice(product, employee, selectedOptions) {
       employerContribution = this.getEmployerContribution(product.employerContribution, price)
       return this.formatPrice(price - employerContribution)
     case 'ltd':
-      price = this.calculateLTDPrice(product, employee, selectedOptions)
+      price = this.calculateLTDPrice(product, selectedOptions, employee)
+      employerContribution = this.getEmployerContribution(product.employerContribution, price)
+      return this.formatPrice(price - employerContribution)
+    case 'commuter':
+      price = this.calculateCommuterCost(product, selectedOptions)
       employerContribution = this.getEmployerContribution(product.employerContribution, price)
       return this.formatPrice(price - employerContribution)
     default:
@@ -80,4 +95,5 @@ module.exports = {
   calculateVolLifePricePerRole,
   calculateVolLifePrice,
   calculateLTDPrice,
+  calculateCommuterCost
 }
